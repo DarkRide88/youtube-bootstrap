@@ -1,0 +1,204 @@
+body {
+  background-color: rgb(245, 240, 240)
+}
+
+header {
+  margin: 0 auto;
+  text-align: center;
+}
+
+.serch-box {
+  input {
+    width: 60%;
+    height: 28px;
+    padding-left: 36px;
+    border-radius: 5px;
+    border: 1px solid gray;
+    font-size: 1.2rem;
+    box-shadow: none;
+    outline:none;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    background: url(/src/views/AppVIew/images/find.png) no-repeat 1% 50%; /* Параметры фона */
+    background-size:20px;
+  }
+
+
+  input:focus {
+    background-color: rgb(255, 6, 6);
+    transition: color .3s,  background-color .3s;
+  }
+  button {
+    height: 24px;
+    border-radius: 3px;
+    border:1px solid gray;
+    display: none;
+  }
+
+}
+
+main {
+  max-width: 100%;
+  position: relative;
+  display: grid;
+  grid-template-rows: 90% 10%;
+  grid-template-areas:
+  '. . resultContainer resultContainer resultContainer '
+  '. . . . .'
+  'pagination  pagination pagination pagination pagination '
+}
+
+.main-background {
+  background-image: url(/src/views/AppVIew/images/SM_Icon_Youtube.png);
+  background-size: 100%;
+  width: 30%;
+  height: 450px;
+  margin: auto;
+  position: absolute;
+  z-index: -1;
+  top: 0; left: 0; right: 0;
+}
+
+.main-background:hover {
+  background-image: url(/src/views/AppVIew/images/red.png);
+  transition: background-image .3s;
+}
+
+.resultContainer {
+  display: grid;
+  grid-area: resultContainer;
+  width: 100%;
+  grid-template-columns: 25% 25% 25% 25%;
+  padding-top: 100px;
+  margin-right: 20px;
+
+}
+.resultBox {
+  overflow: hidden;
+  display: grid;
+  max-width: 360px;
+  max-height: 420px;
+  background: white;
+  border-radius: 10px;
+  border: 2px solid #ccc6c661;
+  position: relative;
+  margin-right: 50px;
+  grid-template-rows: 50% 50%;
+
+}
+.resultBox:hover {
+  background-color: rgb(255, 6, 6);
+  color: white;
+  transform: scale(1.1);
+  transition: color .3s, background-color .3s, transform .3s;
+}
+
+.resultBox-link-box {
+  display: inline-block;
+  position: absolute;
+  width: 100%;
+  height: 60px;
+  left: 0;
+  right: 0;
+  top: 50%;
+  text-align: center;
+  vertical-align: middle;
+  background-color: rgba(221, 221, 8, 0.932);
+  a {
+    margin: 0 auto;
+    display: inline-block;
+    width: 100%;
+    color: black;
+    font-size: 1rem;
+    font-weight: bold;
+  }
+  img {
+    z-index: 1;
+  }
+}
+
+.resultBox-image-box {
+  width:100%;
+  position: relative;
+  img {
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+  }
+  img:hover {
+
+
+  }
+}
+
+
+.resultBox-videoInfo {
+  display: grid;
+  text-align: center;
+  grid-template-columns: 10% 40% 40% 10%;
+  grid-template-rows: 25% 14% 14% 35%;
+  grid-template-areas:
+  '. author author  .'
+  '. date date  .'
+  '. viewCount viewCount  .'
+  'description description description  description';
+  div {
+    width: 100%;
+    margin: auto;
+    // display: grid;
+    grid-template-columns: 1fr 230px  1fr 1fr;
+    margin-bottom: 10px;
+  }
+  img {
+    width: 15px;
+  }
+  span {
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  }
+}
+.resultBox-author {
+  grid-area: author;
+}
+
+.resultBox-date {
+  grid-area: date;
+}
+
+.resultBox-viewCount {
+  grid-area: viewCount;
+}
+
+.resultBox-clipDescription {
+  grid-area: description;
+  span {
+    display: inline-block;
+    text-align: left;
+    padding-left: 10px;
+    font-family: serif;
+  }
+  span:hover {
+    color: white;
+    transition: color .5s;
+  }
+}
+.resultBox-author, .resultBox-viewCount, .resultBox-date {
+  display: grid;
+}
+
+.pagination {
+  grid-area: pagination;
+  margin: auto;
+}
+
+.pagination-item {
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  border: 1px solid gray;
+  margin-left: 10px;
+}
+
+.pagination-item:hover {
+  border: 1px solid red;
+  background-color: red;;
+}
