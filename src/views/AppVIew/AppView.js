@@ -34,12 +34,13 @@ export default class AppView {
     return content;
   }
 
-  // Получаем данные из контроллера
   renderContent(data) {
     this.data = data;
     const content = document.getElementsByClassName('resultContainer');
-    if (content.length > 0) {
+    const pagination = document.getElementsByClassName('pagination');
+    if (content.length > 0 || pagination.length > 0) {
       content[0].remove();
+      pagination[0].remove();
     }
     document.getElementsByTagName('main')[0].appendChild(createResultBox(this.data));
     document.getElementsByTagName('main')[0].appendChild(this.createPagination());

@@ -38,15 +38,13 @@ export default class AppModel {
   }
 
   async extractClipViews(data) {
-    let resArr = [];
-    data.items.map((clip) => resArr.push(clip.id.videoId));
-    resArr = resArr.join(',');
+    const resArr = data.items.map((clip) => clip.id.videoId).join(',');
     const url = `https://www.googleapis.com/youtube/v3/videos?key=AIzaSyDjTvt3DwNkyBnVPM3GXkZKLcMFbyQuEKI&id=${resArr}&part=snippet,statistics`;
 
     const responce = await fetch(url);
     const clipViews = await responce.json();
-    const ViewsArray = clipViews.items.map((clip) => clip.statistics.viewCount);
-    return ViewsArray;
+    const ViewsCount = clipViews.items.map((clip) => clip.statistics.viewCount);
+    return ViewsCount;
   }
 
 
