@@ -1,5 +1,7 @@
 body {
-  background-color: rgb(245, 240, 240)
+  background-color: rgb(245, 240, 240);
+  overflow-x: hidden;
+  user-select: none;
 }
 
 header {
@@ -38,13 +40,15 @@ header {
 
 main {
   max-width: 100%;
+  // position: relative;
+  // display: grid;
+  // grid-template-rows: 90% 10%;
+  // grid-template-areas:
+  // '. . content content content '
+  // '. . . . .'
+  // 'pagination  pagination pagination pagination pagination '
   position: relative;
-  display: grid;
-  grid-template-rows: 90% 10%;
-  grid-template-areas:
-  '. . resultContainer resultContainer resultContainer '
-  '. . . . .'
-  'pagination  pagination pagination pagination pagination '
+    height: 580px;
 }
 
 .main-background {
@@ -64,16 +68,27 @@ main {
   background-image: url(/src/views/AppVIew/images/red.png);
   transition: background-image .3s;
 }
-
+.content {
+  grid-area: content;
+  max-width: 6000px;
+  display: grid;
+  // grid-template-columns: 33% 33% 33%;
+  position: absolute;
+  // left: 10px;
+  transition: left 0.3s;
+}
 .resultContainer {
   display: grid;
-  grid-area: resultContainer;
-  width: 100%;
   grid-template-columns: 25% 25% 25% 25%;
   padding-top: 100px;
   margin-right: 20px;
 
+
 }
+.resultContainer_hidden {
+  display: none;
+}
+
 .resultBox {
   overflow: hidden;
   display: grid;
@@ -85,8 +100,8 @@ main {
   position: relative;
   margin-right: 50px;
   grid-template-rows: 50% 50%;
-
 }
+
 .resultBox:hover {
   background-color: rgb(255, 6, 6);
   color: white;
@@ -185,6 +200,9 @@ main {
 .pagination {
   grid-area: pagination;
   margin: auto;
+  text-align: center;
+  position: absolute;
+  left: 0; right: 0; bottom: 10px;
 }
 
 .pagination-item {
@@ -194,9 +212,25 @@ main {
   border-radius: 50%;
   border: 1px solid gray;
   margin-left: 10px;
+  font-size: 10px;
+  font-family: cursive;
+  vertical-align: middle;
 }
+#right:hover::after {
+  content: attr(data-rightval);
+}
+
 
 .pagination-item:hover {
   border: 1px solid red;
-  background-color: red;;
+  background-color: red;
+
 }
+
+@media screen and (max-width: 1200px) {
+
+
+}
+
+
+

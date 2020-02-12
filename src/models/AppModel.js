@@ -39,7 +39,7 @@ export default class AppModel {
 
   async extractClipViews(data) {
     const resArr = data.items.map((clip) => clip.id.videoId).join(',');
-    const url = `https://www.googleapis.com/youtube/v3/videos?key=AIzaSyDjTvt3DwNkyBnVPM3GXkZKLcMFbyQuEKI&id=${resArr}&part=snippet,statistics`;
+    const url = `https://www.googleapis.com/youtube/v3/videos?key=AIzaSyCTWC75i70moJLzyNh3tt4jzCljZcRkU8Y&id=${resArr}&part=snippet,statistics`;
 
     const responce = await fetch(url);
     const clipViews = await responce.json();
@@ -48,9 +48,9 @@ export default class AppModel {
   }
 
 
-  async getClipNames(searchName) {
+  async getClipData(searchName) {
     this.searchName = searchName;
-    const url = `https://www.googleapis.com/youtube/v3/search?key=AIzaSyDjTvt3DwNkyBnVPM3GXkZKLcMFbyQuEKI&part=snippet&type=video&maxResults=4&q=${this.searchName}`;
+    const url = `https://www.googleapis.com/youtube/v3/search?key=AIzaSyCTWC75i70moJLzyNh3tt4jzCljZcRkU8Y&part=snippet&type=video&maxResults=16&q=${this.searchName}`;
     const responce = await fetch(url);
     const data = await responce.json();
     const clipView = await this.extractClipViews(data);
