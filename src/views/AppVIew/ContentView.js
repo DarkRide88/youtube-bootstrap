@@ -2,30 +2,37 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable class-methods-use-this */
 /* eslint-disable no-plusplus */
-export default class Content {
-  constructor() {
-    this.widthOfWindow = (document.documentElement.clientWidth);
-    this.elemOnPage = 4;
-    if (this.widthOfWindow < 1350) {
-      this.elemOnPage = 3;
+
+
+export default class ContentView {
+  chekWindowSize() {
+    const widthOfWindow = (document.documentElement.clientWidth);
+    let elemOnPage = 4;
+    let lastPage = 4;
+    if (widthOfWindow < 1400) {
+      elemOnPage = 3;
+      lastPage = 6;
     }
+    return { widthOfWindow, elemOnPage, lastPage };
   }
 
   createContentContainer(elemCount) {
+    const { widthOfWindow } = this.chekWindowSize();
     const contentContainer = document.createElement('container');
     contentContainer.classList.add('content');
     contentContainer.setAttribute('data-scroll', 'scroll');
     contentContainer.style.left = `${10}px`;
-    contentContainer.style.maxWidth = `${this.widthOfWindow * elemCount}px`;
+    contentContainer.style.maxWidth = `${widthOfWindow * elemCount}px`;
     contentContainer.style.gridTemplateColumns = `repeat(${elemCount}, ${100 / elemCount}%)`;
     return contentContainer;
   }
 
   createResultContainer() {
+    const { widthOfWindow, elemOnPage } = this.chekWindowSize();
     const resultContainer = document.createElement('div');
     resultContainer.classList.add('resultContainer');
-    resultContainer.style.width = `${this.widthOfWindow}px`;
-    resultContainer.style.gridTemplateColumns = `repeat(${this.elemOnPage}, ${100 / this.elemOnPage}%)`;
+    resultContainer.style.width = `${widthOfWindow}px`;
+    resultContainer.style.gridTemplateColumns = `repeat(${elemOnPage}, ${100 / elemOnPage}%)`;
     return resultContainer;
   }
 
@@ -71,11 +78,12 @@ export default class Content {
 
 
   showContent(data) {
-    const elemCount = Math.ceil(data.clipDate.length / this.elemOnPage);
+    const { elemOnPage } = this.chekWindowSize();
+    const elemCount = Math.ceil(data.clipDate.length / elemOnPage);
     const contentContainer = this.createContentContainer(elemCount);
     for (let i = 0; i < data.clipDate.length;) {
-      contentContainer.appendChild(this.getContent(data, i, i + this.elemOnPage));
-      i += this.elemOnPage;
+      contentContainer.appendChild(this.getContent(data, i, i + elemOnPage));
+      i += elemOnPage;
     }
     return contentContainer;
   }

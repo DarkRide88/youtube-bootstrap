@@ -8,28 +8,34 @@ export default class App {
   constructor() {
     this.model = new AppModel();
     this.view = new AppView();
+    this.content = this.view.content;
   }
 
   static async sendContentToRender(model, view) {
     const searchName = document.getElementById('serch-box-input').value;
     const data = await model.getClipData(searchName);
-    view.renderContent(data);
+    view.renderNewContent(data);
   }
 
-  getHandlers(model, view) {
+  getHandlers(model, view, content) {
     return {
       async serch() {
+        view.removePrevContent();
         App.sendContentToRender(model, view);
       },
 
       async getNextPage(e) {
+        const { lastPage } = content.chekWindowSize();
+
         const windowWidth = (document.documentElement.clientWidth);
         const mulValue = +e.target.dataset.rightval;
         const resultContainer = document.querySelector('.content');
         resultContainer.style.left = `${mulValue * -windowWidth}px`;
         e.target.dataset.rightval = +mulValue + 1;
-        // if (e.target.dataset.rightvalue > 3) {
-        //   App.getContent(model, view);
+        console.log(`Current ${e.target.dataset.rightval} Last${lastPage}`);
+        // if (+e.target.dataset.rightval > +lastPage) {
+        //   // console.log('hello');
+        //   App.sendContentToRender(model, view);
         // }
       },
       getPrevPage() {
@@ -38,7 +44,7 @@ export default class App {
         const mulValue = rightPageButton.dataset.rightval - 2;
         const resultContainer = document.querySelector('.content');
         if (mulValue <= 0) {
-          resultContainer.style.left = `${10}px`;
+          resultContainer.style.left = `${0}px`;
           rightPageButton.dataset.rightval = 1;
         } else {
           resultContainer.style.left = `${mulValue * -windowWidth}px`;
@@ -51,14 +57,15 @@ export default class App {
       },
       async  resize() {
         if (document.getElementsByClassName('content').length > 0) {
+          view.removePrevContent();
           App.sendContentToRender(model, view);
         }
       },
     };
   }
 
-  setEventHandlers(model, view) {
-    const handlers = this.getHandlers(model, view);
+  setEventHandlers(model, view, content) {
+    const handlers = this.getHandlers(model, view, content);
     document.addEventListener('click', (e) => {
       if (e.target.tagName !== 'A') {
         e.preventDefault();
@@ -81,6 +88,6 @@ export default class App {
 
   async start() {
     this.view.render();
-    this.setEventHandlers(this.model, this.view);
+    this.setEventHandlers(this.model, this.view, this.content);
   }
 }

@@ -5,12 +5,12 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable arrow-parens */
 // import createContentContainer from './createContentContainer';
-import Content from './ContentView';
+import ContentView from './ContentView';
 
 export default class AppView {
   constructor(titles) {
     this.titles = titles;
-    this.content = new Content();
+    this.content = new ContentView();
   }
 
   createTemplate() {
@@ -37,7 +37,7 @@ export default class AppView {
     return content;
   }
 
-  removeContent() {
+  removePrevContent() {
     const content = document.getElementsByClassName('content');
     const pagination = document.getElementsByClassName('pagination');
     if (content.length > 0 || pagination.length > 0) {
@@ -46,8 +46,7 @@ export default class AppView {
     }
   }
 
-  renderContent(data) {
-    this.removeContent();
+  renderNewContent(data) {
     this.maneData = data;
     document.getElementsByTagName('main')[0].appendChild(this.content.showContent(this.maneData));
     document.getElementsByTagName('main')[0].appendChild(this.createPagination());

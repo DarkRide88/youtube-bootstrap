@@ -227,8 +227,11 @@ main {
 
 }
 
-@media screen and (max-width: 1200px) {
-
+@media screen and (max-width: 1400px) {
+  .resultBox {
+    width: 320px;
+    color: green;
+  }
 
 }
 
