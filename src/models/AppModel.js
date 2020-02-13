@@ -2,6 +2,10 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable arrow-parens */
 export default class AppModel {
+  constructor() {
+    this.pageToken = '';
+  }
+
   static extractClimpNames(data) {
     return data.items.map((clip) => clip.snippet.title);
   }
@@ -50,9 +54,15 @@ export default class AppModel {
 
   async getClipData(searchName) {
     this.searchName = searchName;
-    const url = `https://www.googleapis.com/youtube/v3/search?key=AIzaSyCTWC75i70moJLzyNh3tt4jzCljZcRkU8Y&part=snippet&type=video&maxResults=16&q=${this.searchName}`;
+    let url;
+    if (this.pageToken === '') {
+      url = `https://www.googleapis.com/youtube/v3/search?key=AIzaSyCTWC75i70moJLzyNh3tt4jzCljZcRkU8Y&part=snippet&type=video&maxResults=16&q=${this.searchName}`;
+    } else {
+      url = `https://www.googleapis.com/youtube/v3/search?pageToken=${this.pageToken}&key=AIzaSyCTWC75i70moJLzyNh3tt4jzCljZcRkU8Y&part=snippet&type=video&maxResults=16&q=${this.searchName}`;
+    }
     const responce = await fetch(url);
     const data = await responce.json();
+    this.pageToken = data.nextPageToken;
     const clipView = await this.extractClipViews(data);
     return {
       clipName: AppModel.extractClimpNames(data),

@@ -1,42 +1,67 @@
+/* eslint-disable no-restricted-syntax */
 /* eslint-disable no-console */
 /* eslint-disable class-methods-use-this */
 import AppModel from '../models/AppModel';
-import AppView from '../views/AppVIew';
+import ContentView from '../views/AppVIew';
 // import Content from '../views/AppVIew/createContentContainer';
 
 export default class App {
   constructor() {
     this.model = new AppModel();
-    this.view = new AppView();
-    this.content = this.view.content;
+    this.view = new ContentView();
+    this.windowWidth = 0;
+    App.globalData = {};
+  }
+
+  static async getDataFromModel(model) {
+    const searchName = document.getElementById('serch-box-input').value;
+    const data = await model.getClipData(searchName);
+    App.setGlobalData(data);
+    return data;
+  }
+
+  static setGlobalData(data) {
+    if (Object.values(App.globalData).length === 0) {
+      App.globalData = data;
+    } else {
+      for (const val of Object.keys(data)) {
+        App.globalData[val] = App.globalData[val].concat(data[val]);
+      }
+    }
   }
 
   static async sendContentToRender(model, view) {
-    const searchName = document.getElementById('serch-box-input').value;
-    const data = await model.getClipData(searchName);
+    const data = await App.getDataFromModel(model, view);
     view.renderNewContent(data);
   }
 
-  getHandlers(model, view, content) {
+  static resizeContent(view) {
+    view.renderNewContent(App.globalData);
+  }
+
+  static getPage(val) {
+    document.querySelector('.content').style.left = `${(val - 1) * -document.documentElement.clientWidth}px`;
+    document.getElementById('right').dataset.rightval = val;
+  }
+
+  getHandlers(model, view, scope) {
     return {
       async serch() {
         view.removePrevContent();
+        console.log(scope);
         App.sendContentToRender(model, view);
       },
 
       async getNextPage(e) {
-        const { lastPage } = content.chekWindowSize();
-
         const windowWidth = (document.documentElement.clientWidth);
         const mulValue = +e.target.dataset.rightval;
         const resultContainer = document.querySelector('.content');
         resultContainer.style.left = `${mulValue * -windowWidth}px`;
         e.target.dataset.rightval = +mulValue + 1;
-        console.log(`Current ${e.target.dataset.rightval} Last${lastPage}`);
-        // if (+e.target.dataset.rightval > +lastPage) {
-        //   // console.log('hello');
-        //   App.sendContentToRender(model, view);
-        // }
+        if (+e.target.dataset.rightval > view.getLastPage()) {
+          const data = await App.getDataFromModel(model, view);
+          view.addNewContent(data);
+        }
       },
       getPrevPage() {
         const windowWidth = (document.documentElement.clientWidth);
@@ -52,20 +77,28 @@ export default class App {
           rightPageButton.dataset.rightval -= 1;
         }
       },
+
       scroll() {
         // console.log(e.target.getBoundingClientRect());
       },
-      async  resize() {
+      async  resize(windowSize, pageNumber) {
+        this.windowSize = document.documentElement.clientWidth;
         if (document.getElementsByClassName('content').length > 0) {
-          view.removePrevContent();
-          App.sendContentToRender(model, view);
+          if (document.documentElement.clientWidth !== windowSize) {
+            console.log(view.resizeContent);
+            view.removePrevContent();
+            App.resizeContent(view);
+            App.getPage(pageNumber);
+          }
         }
       },
     };
   }
 
-  setEventHandlers(model, view, content) {
-    const handlers = this.getHandlers(model, view, content);
+
+  setEventHandlers(model, view, scope) {
+    const handlers = this.getHandlers(model, view, scope);
+    let windowSize = (document.documentElement.clientWidth);
     document.addEventListener('click', (e) => {
       if (e.target.tagName !== 'A') {
         e.preventDefault();
@@ -80,14 +113,19 @@ export default class App {
     });
 
     window.addEventListener('resize', () => {
+      const prevwindowSize = windowSize;
+      const pageNumber = document.querySelector('#right').dataset.rightval;
+      windowSize = (document.documentElement.clientWidth);
       setTimeout(() => {
-        handlers.resize(this.model, this.view);
-      }, 100);
+        handlers.resize(prevwindowSize, pageNumber);
+      }, 500);
     });
   }
 
   async start() {
+    console.log(this);
+    console.log(this.view);
     this.view.render();
-    this.setEventHandlers(this.model, this.view, this.content);
+    this.setEventHandlers(this.model, this.view, this);
   }
 }

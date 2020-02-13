@@ -1,4 +1,4 @@
-import AppView from './AppView';
+import ContentView from './ContentView';
 import './style/style.scss';
 
-export default AppView;
+export default ContentView;

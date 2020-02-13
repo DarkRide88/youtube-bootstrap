@@ -1,47 +1,74 @@
+/* eslint-disable no-param-reassign */
+/* eslint-disable no-unused-expressions */
+/* eslint-disable radix */
 /* eslint-disable no-continue */
 /* eslint-disable no-unused-vars */
 /* eslint-disable class-methods-use-this */
 /* eslint-disable no-plusplus */
+import AppView from './AppView';
 
+export default class ContentView extends AppView {
+  // constructor() {
+  //   // this.AppView = new AppView();
+  // }
 
-export default class ContentView {
-  chekWindowSize() {
-    const widthOfWindow = (document.documentElement.clientWidth);
-    let elemOnPage = 4;
+  getInfoAboutElements(data) {
+    let widthOfWindow = (document.documentElement.clientWidth);
+    let elOnPage = 4;
     let lastPage = 4;
     if (widthOfWindow < 1400) {
-      elemOnPage = 3;
-      lastPage = 6;
+      widthOfWindow = (document.documentElement.clientWidth);
+      elOnPage = 3;
+      lastPage = 5;
     }
-    return { widthOfWindow, elemOnPage, lastPage };
+    if (widthOfWindow < 1100) {
+      widthOfWindow = (document.documentElement.clientWidth);
+      elOnPage = 2;
+      lastPage = 8;
+    }
+    if (widthOfWindow < 650) {
+      widthOfWindow = (document.documentElement.clientWidth);
+      elOnPage = 1;
+      lastPage = 16;
+    }
+    const pageCount = (Math.trunc(16 / elOnPage));
+    const resultBoxCount = (Math.trunc(16 / elOnPage) * elOnPage);
+    return {
+      widthOfWindow, elOnPage, lastPage, resultBoxCount, pageCount,
+    };
   }
 
-  createContentContainer(elemCount) {
-    const { widthOfWindow } = this.chekWindowSize();
+  getLastPage() {
+    const { elOnPage } = this.getInfoAboutElements();
+    return (document.getElementsByClassName('resultBox').length) / elOnPage;
+  }
+
+  createContentContainer(pageCount) {
+    const { widthOfWindow } = this.getInfoAboutElements();
     const contentContainer = document.createElement('container');
     contentContainer.classList.add('content');
     contentContainer.setAttribute('data-scroll', 'scroll');
-    contentContainer.style.left = `${10}px`;
-    contentContainer.style.maxWidth = `${widthOfWindow * elemCount}px`;
-    contentContainer.style.gridTemplateColumns = `repeat(${elemCount}, ${100 / elemCount}%)`;
+    contentContainer.style.left = '0';
+    contentContainer.style.maxWidth = `${widthOfWindow * pageCount}px`;
+    contentContainer.style.gridTemplateColumns = `repeat(${pageCount}, ${100 / pageCount}%)`;
     return contentContainer;
   }
 
   createResultContainer() {
-    const { widthOfWindow, elemOnPage } = this.chekWindowSize();
+    const { widthOfWindow, elOnPage } = this.getInfoAboutElements();
     const resultContainer = document.createElement('div');
     resultContainer.classList.add('resultContainer');
     resultContainer.style.width = `${widthOfWindow}px`;
-    resultContainer.style.gridTemplateColumns = `repeat(${elemOnPage}, ${100 / elemOnPage}%)`;
+    resultContainer.style.gridTemplateColumns = `repeat(${elOnPage}, ${100 / elOnPage}%)`;
     return resultContainer;
   }
 
   getContent(data, from, to) {
     let res = '';
     for (let i = from; i < to; ++i) {
-      if (data.clipImage[i] === undefined) {
-        continue;
-      }
+      // if (data.clipImage[i] === undefined) {
+      //   continue;
+      // }
       res += `<div class="resultBox">
 
       <div class="resultBox-image-box">
@@ -78,13 +105,29 @@ export default class ContentView {
 
 
   showContent(data) {
-    const { elemOnPage } = this.chekWindowSize();
-    const elemCount = Math.ceil(data.clipDate.length / elemOnPage);
-    const contentContainer = this.createContentContainer(elemCount);
-    for (let i = 0; i < data.clipDate.length;) {
-      contentContainer.appendChild(this.getContent(data, i, i + elemOnPage));
-      i += elemOnPage;
+    const { elOnPage } = this.getInfoAboutElements();
+    const resultBoxCount = (Math.trunc(data.clipDate.length / elOnPage) * elOnPage);
+    const pageCount = (Math.trunc(data.clipDate.length / elOnPage));
+    const contentContainer = this.createContentContainer(pageCount);
+
+    for (let i = 0; i < resultBoxCount;) {
+      contentContainer.appendChild(this.getContent(data, i, i + elOnPage));
+      i += elOnPage;
     }
     return contentContainer;
+  }
+
+  addNewContent(data) {
+    const {
+      widthOfWindow, elOnPage, lastPage, resultBoxCount,
+    } = this.getInfoAboutElements(data);
+    const resContCount = document.getElementsByClassName('resultContainer').length;
+    const content = document.querySelector('.content');
+    for (let i = 0; i < resultBoxCount;) {
+      content.appendChild((this.getContent(data, i, i + elOnPage)));
+      i += elOnPage;
+    }
+    content.style.maxWidth = `${parseInt(content.style.maxWidth) + (widthOfWindow * (Math.trunc(16 / elOnPage)))}px`;
+    content.style.gridTemplateColumns = `repeat(${resContCount + lastPage}, ${100 / (resContCount + lastPage)}%)`;
   }
 }

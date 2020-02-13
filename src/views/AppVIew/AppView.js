@@ -5,12 +5,11 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable arrow-parens */
 // import createContentContainer from './createContentContainer';
-import ContentView from './ContentView';
+// import ContentView from './ContentView';
 
 export default class AppView {
   constructor(titles) {
     this.titles = titles;
-    this.content = new ContentView();
   }
 
   createTemplate() {
@@ -48,7 +47,7 @@ export default class AppView {
 
   renderNewContent(data) {
     this.maneData = data;
-    document.getElementsByTagName('main')[0].appendChild(this.content.showContent(this.maneData));
+    document.getElementsByTagName('main')[0].appendChild(this.showContent(this.maneData));
     document.getElementsByTagName('main')[0].appendChild(this.createPagination());
   }
 
