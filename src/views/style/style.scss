@@ -246,16 +246,14 @@ body {
     &__item {
       height: 30px;
       width: 30px;
-      font-size: 20px;
-      vertical-align: middle;
     }
     &__right:hover::after {
       content: attr(data-rightval);
-      vertical-align: middle;
+      font-size: 1.6em;
     }
     &__left:hover::after {
       content: '<';
-      font-size: 15px!important;
+      font-size: 1.6em;
     }
   }
 }
