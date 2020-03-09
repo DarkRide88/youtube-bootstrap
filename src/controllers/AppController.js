@@ -1,57 +1,70 @@
+/* eslint-disable radix */
 /* eslint-disable no-restricted-syntax */
-/* eslint-disable no-console */
 /* eslint-disable class-methods-use-this */
 import AppModel from '../models/AppModel';
-import ContentView from '../views/AppVIew';
-// import Content from '../views/AppVIew/createContentContainer';
+import ContentView from '../views/ContentView';
+
 
 export default class App {
   constructor() {
     this.model = new AppModel();
     this.view = new ContentView();
-    this.windowWidth = 0;
-    App.globalData = {};
+    this.dataFromAllResponces = {};
   }
 
-  static async getDataFromModel(model) {
-    const searchName = document.getElementById('serch-box-input').value;
-    const data = await model.getClipData(searchName);
-    App.setGlobalData(data);
+  async getDataFromModel() {
+    const searchName = document.getElementById('serch-box__input').value;
+    const data = await this.model.getClipData(searchName);
+    this.setDataFromAllResponces(data);
     return data;
   }
 
-  static setGlobalData(data) {
-    if (Object.values(App.globalData).length === 0) {
-      App.globalData = data;
+  async sendDataToRenderContent() {
+    const data = await this.getDataFromModel(this.model, this.view);
+    this.view.renderNewContent(data);
+  }
+
+  setDataFromAllResponces(data) {
+    if (Object.values(this.dataFromAllResponces).length === 0) {
+      this.dataFromAllResponces = data;
     } else {
       for (const val of Object.keys(data)) {
-        App.globalData[val] = App.globalData[val].concat(data[val]);
+        this.dataFromAllResponces[val] = this.dataFromAllResponces[val].concat(data[val]);
       }
     }
   }
 
-  static async sendContentToRender(model, view) {
-    const data = await App.getDataFromModel(model, view);
-    view.renderNewContent(data);
+  resizeContent() {
+    this.view.renderNewContent(this.dataFromAllResponces);
   }
 
-  static resizeContent(view) {
-    view.renderNewContent(App.globalData);
+  getPage(val) {
+    const maxWidth = parseInt(document.querySelector('.content').style.maxWidth);
+    const leftCoords = (val - 1) * -document.documentElement.clientWidth;
+    document.querySelector('.content').style.left = `${leftCoords}px`;
+    document.getElementById('pagination-right').dataset.rightval = val;
+    if (-1 * maxWidth >= leftCoords) {
+      document.querySelector('.content').style.left = `${-maxWidth + +window.innerWidth}px`;
+      document.getElementById('pagination-right').dataset.rightval = Math.round(maxWidth / window.innerWidth);
+    }
   }
 
-  static getPage(val) {
-    document.querySelector('.content').style.left = `${(val - 1) * -document.documentElement.clientWidth}px`;
-    document.getElementById('right').dataset.rightval = val;
-  }
-
-  getHandlers(model, view, scope) {
+  getHandlers(view, scope) {
     return {
       async serch() {
         view.removePrevContent();
-        console.log(scope);
-        App.sendContentToRender(model, view);
+        scope.sendDataToRenderContent();
       },
-
+      async  resize(windowSize, pageNumber) {
+        this.windowSize = document.documentElement.clientWidth;
+        if (document.getElementsByClassName('content').length > 0) {
+          if (document.documentElement.clientWidth !== windowSize) {
+            view.removePrevContent();
+            scope.resizeContent(view);
+            scope.getPage(pageNumber);
+          }
+        }
+      },
       async getNextPage(e) {
         const windowWidth = (document.documentElement.clientWidth);
         const mulValue = +e.target.dataset.rightval;
@@ -59,13 +72,13 @@ export default class App {
         resultContainer.style.left = `${mulValue * -windowWidth}px`;
         e.target.dataset.rightval = +mulValue + 1;
         if (+e.target.dataset.rightval > view.getLastPage()) {
-          const data = await App.getDataFromModel(model, view);
+          const data = await scope.getDataFromModel();
           view.addNewContent(data);
         }
       },
       getPrevPage() {
         const windowWidth = (document.documentElement.clientWidth);
-        const rightPageButton = document.getElementById('right');
+        const rightPageButton = document.getElementById('pagination-right');
         const mulValue = rightPageButton.dataset.rightval - 2;
         const resultContainer = document.querySelector('.content');
         if (mulValue <= 0) {
@@ -79,25 +92,13 @@ export default class App {
       },
 
       scroll() {
-        // console.log(e.target.getBoundingClientRect());
       },
-      async  resize(windowSize, pageNumber) {
-        this.windowSize = document.documentElement.clientWidth;
-        if (document.getElementsByClassName('content').length > 0) {
-          if (document.documentElement.clientWidth !== windowSize) {
-            console.log(view.resizeContent);
-            view.removePrevContent();
-            App.resizeContent(view);
-            App.getPage(pageNumber);
-          }
-        }
-      },
+
     };
   }
 
-
-  setEventHandlers(model, view, scope) {
-    const handlers = this.getHandlers(model, view, scope);
+  setEventHandlers(view, scope) {
+    const handlers = this.getHandlers(view, scope);
     let windowSize = (document.documentElement.clientWidth);
     document.addEventListener('click', (e) => {
       if (e.target.tagName !== 'A') {
@@ -114,7 +115,7 @@ export default class App {
 
     window.addEventListener('resize', () => {
       const prevwindowSize = windowSize;
-      const pageNumber = document.querySelector('#right').dataset.rightval;
+      const pageNumber = document.querySelector('#pagination-right').dataset.rightval;
       windowSize = (document.documentElement.clientWidth);
       setTimeout(() => {
         handlers.resize(prevwindowSize, pageNumber);
@@ -123,9 +124,7 @@ export default class App {
   }
 
   async start() {
-    console.log(this);
-    console.log(this.view);
     this.view.render();
-    this.setEventHandlers(this.model, this.view, this);
+    this.setEventHandlers(this.view, this);
   }
 }

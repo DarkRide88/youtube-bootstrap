@@ -1,12 +1,23 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
+const PATHS = {
+  src: path.join(__dirname, '../src'),
+  dist: path.join(__dirname, '../dist'),
+  assets: 'assets/',
+};
 module.exports = {
-  entry: './src/index.js',
+  externals: {
+    path: PATHS,
+  },
+  entry: {
+    app: './src/index.js',
+  },
   output: {
-    filename: 'app.bundle.js',
-    path: path.resolve(__dirname, 'dist'),
+    filename: `${PATHS.assets}js/[name].js`,
+    path: PATHS.dist,
   },
   resolve: { extensions: ['.js', '.jsx'] },
   devtool: 'source-map',
@@ -21,17 +32,6 @@ module.exports = {
         },
       },
       {
-        test: /\.css$/,
-        use: [
-          'style-loader',
-          MiniCssExtractPlugin.loader,
-          {
-            loader: 'css-loader',
-            options: { sourceMap: true },
-          },
-        ],
-      },
-      {
         test: /\.scss$/,
         use: [
           'style-loader',
@@ -40,20 +40,34 @@ module.exports = {
             loader: 'css-loader',
             options: { sourceMap: true },
           }, {
+            loader: 'postcss-loader',
+            options: { sourceMap: true, config: { path: 'postcss.config.js' } },
+          }, {
             loader: 'sass-loader',
             options: { sourceMap: true },
           },
         ],
+
+      },
+      {
+        test: /\.(jpg|png|svg|gif)$/,
+        loader: 'file-loader',
+        options: {
+          name: '[name].[ext]',
+        },
       },
     ],
   },
   plugins: [
     new MiniCssExtractPlugin({
-      filename: '[name].css',
+      filename: `${PATHS.assets}css/[name].css`,
     }),
     new HtmlWebpackPlugin({
-      title: 'App',
-      template: './index.html',
+      hash: true,
+      template: './src/index.html',
     }),
+    new CopyWebpackPlugin([
+      { from: `${PATHS.src}/views/images`, to: `${PATHS.assets}images/` },
+    ]),
   ],
 };

@@ -1,9 +1,9 @@
-/* eslint-disable no-console */
 /* eslint-disable class-methods-use-this */
 /* eslint-disable arrow-parens */
 export default class AppModel {
   constructor() {
     this.pageToken = '';
+    this.apiKey = 'AIzaSyDjTvt3DwNkyBnVPM3GXkZKLcMFbyQuEKI';
   }
 
   static extractClimpNames(data) {
@@ -43,7 +43,7 @@ export default class AppModel {
 
   async extractClipViews(data) {
     const resArr = data.items.map((clip) => clip.id.videoId).join(',');
-    const url = `https://www.googleapis.com/youtube/v3/videos?key=AIzaSyCTWC75i70moJLzyNh3tt4jzCljZcRkU8Y&id=${resArr}&part=snippet,statistics`;
+    const url = `https://www.googleapis.com/youtube/v3/videos?key=${this.apiKey}&id=${resArr}&part=snippet,statistics`;
 
     const responce = await fetch(url);
     const clipViews = await responce.json();
@@ -56,9 +56,9 @@ export default class AppModel {
     this.searchName = searchName;
     let url;
     if (this.pageToken === '') {
-      url = `https://www.googleapis.com/youtube/v3/search?key=AIzaSyCTWC75i70moJLzyNh3tt4jzCljZcRkU8Y&part=snippet&type=video&maxResults=16&q=${this.searchName}`;
+      url = `https://www.googleapis.com/youtube/v3/search?key=${this.apiKey}&part=snippet&type=video&maxResults=16&q=${this.searchName}`;
     } else {
-      url = `https://www.googleapis.com/youtube/v3/search?pageToken=${this.pageToken}&key=AIzaSyCTWC75i70moJLzyNh3tt4jzCljZcRkU8Y&part=snippet&type=video&maxResults=16&q=${this.searchName}`;
+      url = `https://www.googleapis.com/youtube/v3/search?pageToken=${this.pageToken}&key=${this.apiKey}&part=snippet&type=video&maxResults=16&q=${this.searchName}`;
     }
     const responce = await fetch(url);
     const data = await responce.json();
@@ -69,7 +69,7 @@ export default class AppModel {
       clipDate: AppModel.extractClimpDate(data),
       clipImage: AppModel.extractClimpImage(data),
       channelTitle: AppModel.extractChannelTitle(data),
-      videoId: AppModel.extractClipId(data),
+      clipId: AppModel.extractClipId(data),
       clipDescription: AppModel.extractClipDescription(data),
       clipViews: clipView,
     };
