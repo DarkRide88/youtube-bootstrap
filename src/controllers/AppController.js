@@ -77,7 +77,8 @@ export default class App {
         if (+right.dataset.rightval > view.getLastPage()) {
           const data = await scope.getDataFromModel();
           view.addNewContent(data);
-          scope.swipe(this.view, this);
+          scope.removeSwipe();
+          scope.swipe(view, scope);
         }
       },
       getPrevPage() {
@@ -94,18 +95,6 @@ export default class App {
           rightPageButton.dataset.rightval -= 1;
         }
       },
-
-      // swipe() {
-      //   console.log('ja rodilksa');
-      //   const square = document.body;
-      //   // Create an instance of Hammer with the reference.
-      //   const manager = new Hammer(square);
-      //   manager.on('swipe', () => {
-      //     this.getNextPage();
-      //     console.log('kek');
-      //   });
-      // },
-
     };
   }
 
@@ -135,15 +124,29 @@ export default class App {
     });
   }
 
-  swipe(view, scope) {
-    const handlers = this.getHandlers(view, scope);
-    const square = document.querySelectorAll('.result-container');
 
-    for (let i = 0; i < square.length; i += 1) {
-      const manager = new Hammer(square[i]);
-      manager.on('swipe', () => {
+  async swipe(view, scope) {
+    const handlers = this.getHandlers(view, scope);
+    const resContainers = document.querySelectorAll('.result-container');
+
+    for (let i = 0; i < resContainers.length; i += 1) {
+      const manager = new Hammer(resContainers[i]);
+      manager.on('swipeleft', () => {
         handlers.getNextPage();
       });
+    }
+    for (let i = 0; i < resContainers.length; i += 1) {
+      const manager = new Hammer(resContainers[i]);
+      manager.on('swiperight', () => {
+        handlers.getPrevPage();
+      });
+    }
+  }
+
+  removeSwipe() {
+    const resContainers = document.querySelectorAll('.result-container');
+    for (let i = 0; i < resContainers.length; i += 1) {
+      resContainers[i].removeEventListener('leftswipe', undefined, !1);
     }
   }
 

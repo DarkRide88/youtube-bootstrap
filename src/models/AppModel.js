@@ -3,7 +3,7 @@
 export default class AppModel {
   constructor() {
     this.pageToken = '';
-    this.apiKey = 'AIzaSyDjTvt3DwNkyBnVPM3GXkZKLcMFbyQuEKI';
+    this.apiKey = 'AIzaSyBU3Ol2ZwE8Cwda0q_pKG6Mpe4Q2NkEa_4';
   }
 
   static extractClimpNames(data) {

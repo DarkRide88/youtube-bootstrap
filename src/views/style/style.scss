@@ -199,6 +199,7 @@ body {
   }
   &__left:hover::after {
     content: '<';
+    font-size: 8px;
   }
 }
 
@@ -233,6 +234,26 @@ body {
 @media screen and (max-width: 650px) {
   .result-box {
     width: 450px;
+  }
+  .serch-box {
+    &__input {
+      width: 90%;
+    }
+  }
+  .pagination {
+    &__item {
+      height: 30px;
+      width: 30px;
+      font-size: 20px;
+      vertical-align: middle;
+    }
+    &__right:hover::after {
+      content: attr(data-rightval);
+      vertical-align: middle;
+    }
+    &__left:hover::after {
+      content: '<';
+    }
   }
 }
 
