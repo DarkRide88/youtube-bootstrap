@@ -179,12 +179,12 @@ body {
 
   &__item {
     display: inline-block;
-    width: 15px;
-    height: 15px;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
     border: 1px solid $defaultBorderColor;
     margin-left: 10px;
-    font-size: 10px;
+
     font-family: cursive;
     vertical-align: middle;
     &:hover {
@@ -194,12 +194,14 @@ body {
   }
   &__right:hover::after {
     content: attr(data-rightval);
-    font-size: 9px;
+    font-size: .9rem;
     vertical-align: middle;
+    text-align: center;
   }
   &__left:hover::after {
     content: '<';
-    font-size: 8px;
+    font-size: 1.2rem;
+
   }
 }
 
@@ -253,6 +255,7 @@ body {
     }
     &__left:hover::after {
       content: '<';
+      font-size: 15px!important;
     }
   }
 }
