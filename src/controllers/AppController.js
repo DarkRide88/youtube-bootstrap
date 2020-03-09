@@ -1,9 +1,10 @@
+/* eslint-disable no-console */
 /* eslint-disable radix */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable class-methods-use-this */
+import Hammer from 'hammerjs';
 import AppModel from '../models/AppModel';
 import ContentView from '../views/ContentView';
-
 
 export default class App {
   constructor() {
@@ -22,6 +23,7 @@ export default class App {
   async sendDataToRenderContent() {
     const data = await this.getDataFromModel(this.model, this.view);
     this.view.renderNewContent(data);
+    this.swipe(this.view, this);
   }
 
   setDataFromAllResponces(data) {
@@ -65,15 +67,17 @@ export default class App {
           }
         }
       },
-      async getNextPage(e) {
+      async getNextPage() {
         const windowWidth = (document.documentElement.clientWidth);
-        const mulValue = +e.target.dataset.rightval;
+        const right = document.querySelector('#pagination-right');
+        const mulValue = +right.dataset.rightval;
         const resultContainer = document.querySelector('.content');
         resultContainer.style.left = `${mulValue * -windowWidth}px`;
-        e.target.dataset.rightval = +mulValue + 1;
-        if (+e.target.dataset.rightval > view.getLastPage()) {
+        right.dataset.rightval = +mulValue + 1;
+        if (+right.dataset.rightval > view.getLastPage()) {
           const data = await scope.getDataFromModel();
           view.addNewContent(data);
+          scope.swipe(this.view, this);
         }
       },
       getPrevPage() {
@@ -91,8 +95,16 @@ export default class App {
         }
       },
 
-      scroll() {
-      },
+      // swipe() {
+      //   console.log('ja rodilksa');
+      //   const square = document.body;
+      //   // Create an instance of Hammer with the reference.
+      //   const manager = new Hammer(square);
+      //   manager.on('swipe', () => {
+      //     this.getNextPage();
+      //     console.log('kek');
+      //   });
+      // },
 
     };
   }
@@ -101,10 +113,10 @@ export default class App {
     const handlers = this.getHandlers(view, scope);
     let windowSize = (document.documentElement.clientWidth);
     document.addEventListener('click', (e) => {
+      console.log(e.target);
       if (e.target.tagName !== 'A') {
         e.preventDefault();
       }
-
       if (Object.keys(e.target.dataset).length !== 0) {
         const handlersFromData = e.target.dataset.handler.split(',');
         handlersFromData.forEach((element) => {
@@ -121,6 +133,18 @@ export default class App {
         handlers.resize(prevwindowSize, pageNumber);
       }, 500);
     });
+  }
+
+  swipe(view, scope) {
+    const handlers = this.getHandlers(view, scope);
+    const square = document.querySelectorAll('.result-container');
+
+    for (let i = 0; i < square.length; i += 1) {
+      const manager = new Hammer(square[i]);
+      manager.on('swipe', () => {
+        handlers.getNextPage();
+      });
+    }
   }
 
   async start() {

@@ -85,7 +85,7 @@ export default class ContentView extends AppView {
           <span class="result-box__text result-box__text_hover result-box__text_bold">${data.clipViews[i]}</span>
         </div>
         <div class="result-box__clip-description">
-          <span class="result-box__text result-box__text result-box__text_hover result-box__text_gray">${data.clipDescription[i]}</span>
+          <span class="result-box__text result-box__text result-box__text_hover result-box__text_gray" data-handler="swipe">${data.clipDescription[i]}</span>
         </div>
       </div>
     </div>`;
