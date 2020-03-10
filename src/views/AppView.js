@@ -29,8 +29,8 @@ export default class AppView {
   createPagination() {
     const content = document.createElement('div');
     content.classList.add('pagination');
-    content.innerHTML = `<div id="pagination-left" class="pagination__item pagination__left" data-handler="getPrevPage" data-leftval="0" ></div>
-    <div id="pagination-right" class="pagination__item pagination__right" data-handler="getNextPage" data-rightval="1"></div>`;
+    content.innerHTML = `<div id="pagination-prev" class="pagination__item pagination__prev" data-handler="getPrevPage" data-leftval="0" ></div>
+    <div id="pagination-next" class="pagination__item pagination__next" data-handler="getNextPage" data-nextval="1"></div>`;
     return content;
   }
 

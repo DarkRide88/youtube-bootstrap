@@ -1,3 +1,5 @@
+
+/* eslint-disable no-mixed-operators */
 /* eslint-disable no-console */
 /* eslint-disable radix */
 /* eslint-disable no-restricted-syntax */
@@ -23,7 +25,8 @@ export default class App {
   async sendDataToRenderContent() {
     const data = await this.getDataFromModel(this.model, this.view);
     this.view.renderNewContent(data);
-    this.swipe(this.view, this);
+    this.setSwipeListener(this.view, this);
+    this.checkTouch();
   }
 
   setDataFromAllResponces(data) {
@@ -40,7 +43,7 @@ export default class App {
     this.view.renderNewContent(this.dataFromAllResponces);
   }
 
-  getPage(val) {
+  getCurrentPageForResize(val) {
     const maxWidth = parseInt(document.querySelector('.content').style.maxWidth);
     const leftCoords = (val - 1) * -document.documentElement.clientWidth;
     document.querySelector('.content').style.left = `${leftCoords}px`;
@@ -63,36 +66,36 @@ export default class App {
           if (document.documentElement.clientWidth !== windowSize) {
             view.removePrevContent();
             scope.resizeContent(view);
-            scope.getPage(pageNumber);
+            scope.getCurrentPageForResize(pageNumber);
           }
         }
       },
       async getNextPage() {
         const windowWidth = (document.documentElement.clientWidth);
-        const right = document.querySelector('#pagination-right');
-        const mulValue = +right.dataset.rightval;
+        const right = document.querySelector('#pagination-next');
+        const mulValue = +right.dataset.nextval;
         const resultContainer = document.querySelector('.content');
         resultContainer.style.left = `${mulValue * -windowWidth}px`;
-        right.dataset.rightval = +mulValue + 1;
-        if (+right.dataset.rightval > view.getLastPage()) {
+        right.dataset.nextval = +mulValue + 1;
+        if (+right.dataset.nextval > view.getLastPage() - 1) {
           const data = await scope.getDataFromModel();
           view.addNewContent(data);
-          scope.removeSwipe();
-          scope.swipe(view, scope);
+          scope.removeSwipeListener();
+          scope.setSwipeListener(view, scope);
         }
       },
       getPrevPage() {
         const windowWidth = (document.documentElement.clientWidth);
-        const rightPageButton = document.getElementById('pagination-right');
-        const mulValue = rightPageButton.dataset.rightval - 2;
+        const rightPageButton = document.getElementById('pagination-next');
+        const mulValue = rightPageButton.dataset.nextval - 2;
         const resultContainer = document.querySelector('.content');
         if (mulValue <= 0) {
           resultContainer.style.left = `${0}px`;
-          rightPageButton.dataset.rightval = 1;
+          rightPageButton.dataset.nextval = 1;
         } else {
           resultContainer.style.left = `${mulValue * -windowWidth}px`;
           resultContainer.style.left = +resultContainer.style.left - 1;
-          rightPageButton.dataset.rightval -= 1;
+          rightPageButton.dataset.nextval -= 1;
         }
       },
     };
@@ -116,7 +119,7 @@ export default class App {
 
     window.addEventListener('resize', () => {
       const prevwindowSize = windowSize;
-      const pageNumber = document.querySelector('#pagination-right').dataset.rightval;
+      const pageNumber = document.querySelector('#pagination-next').dataset.rightval;
       windowSize = (document.documentElement.clientWidth);
       setTimeout(() => {
         handlers.resize(prevwindowSize, pageNumber);
@@ -125,7 +128,7 @@ export default class App {
   }
 
 
-  async swipe(view, scope) {
+  setSwipeListener(view, scope) {
     const handlers = this.getHandlers(view, scope);
     const resContainers = document.querySelectorAll('.result-container');
 
@@ -143,10 +146,22 @@ export default class App {
     }
   }
 
-  removeSwipe() {
+  removeSwipeListener() {
     const resContainers = document.querySelectorAll('.result-container');
     for (let i = 0; i < resContainers.length; i += 1) {
-      resContainers[i].removeEventListener('leftswipe', undefined, !1);
+      resContainers[i].removeEventListener('swipeleft', undefined, !1);
+    }
+    for (let i = 0; i < resContainers.length; i += 1) {
+      resContainers[i].removeEventListener('swiperight', undefined, !1);
+    }
+  }
+
+  checkTouch() {
+    if (('ontouchstart' in window) || window.DocumentTouch && document instanceof window.DocumentTouch) {
+      console.log('this is a touch device');
+    } else {
+      console.log('this is not a touch device');
+      document.body.classList.add('no-touch');
     }
   }
 

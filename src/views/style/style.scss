@@ -154,19 +154,24 @@ body {
   &__view-count {
     grid-area: viewCount;
   }
-  &:hover {
-    background-color: rgb(255, 6, 6);
-    transform: scale(1.1);
-    transition: background-color .3s, transform .3s;
-  }
-  &:hover  .result-box__image{
-    transform: rotate(5deg) scale(.95);
-    transition: transform .3s;
-  }
-  &:hover .result-box__text_hover{
-    color: white;
-    transition: color .3s;
-  }
+  // &:hover {
+  //   background-color: rgb(255, 6, 6);
+  //   transform: scale(1.1);
+  //   transition: background-color .3s, transform .3s;
+  // }
+  // &:hover .result-box__text_hover{
+  //   color: white;
+  //   transition: color .3s;
+  // }
+}
+.no-touch .result-box:hover {
+  background-color: rgb(255, 6, 6);
+  transform: scale(1.1);
+  transition: background-color .3s, transform .3s;
+}
+.no-touch .result-box:hover .result-box__text_hover {
+  color: white;
+  transition: color .3s;
 }
 
 
@@ -192,13 +197,13 @@ body {
       background-color: red;
     }
   }
-  &__right:hover::after {
-    content: attr(data-rightval);
+  &__next:hover::after {
+    content: attr(data-nextval);
     font-size: .9rem;
     vertical-align: middle;
     text-align: center;
   }
-  &__left:hover::after {
+  &__prev:hover::after {
     content: '<';
     font-size: 1.2rem;
 
@@ -247,13 +252,15 @@ body {
       height: 30px;
       width: 30px;
     }
-    &__right:hover::after {
-      content: attr(data-rightval);
-      font-size: 1.6em;
+    &__next:hover::after {
+      content: attr(data-nextval);
+      font-size: 1.5rem;
+      line-height: 2.1rem;
     }
-    &__left:hover::after {
+    &__prev:hover::after {
       content: '<';
-      font-size: 1.6em;
+      font-size: 1.6rem;
+      line-height: 2.3rem;
     }
   }
 }
