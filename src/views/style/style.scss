@@ -25,7 +25,7 @@ body {
     padding-left: 36px;
   }
   &__input:focus {
-    background-color: rgb(255, 6, 6);
+    background-color: rgb(255, 6, 6)!important;
     transition: background-color .3s;
   }
   &__button {
@@ -154,15 +154,6 @@ body {
   &__view-count {
     grid-area: viewCount;
   }
-  // &:hover {
-  //   background-color: rgb(255, 6, 6);
-  //   transform: scale(1.1);
-  //   transition: background-color .3s, transform .3s;
-  // }
-  // &:hover .result-box__text_hover{
-  //   color: white;
-  //   transition: color .3s;
-  // }
 }
 .no-touch .result-box:hover {
   background-color: rgb(255, 6, 6);
@@ -260,7 +251,7 @@ body {
     &__prev:hover::after {
       content: '<';
       font-size: 1.6rem;
-      line-height: 2.3rem;
+      line-height: 2.1rem;
     }
   }
 }

@@ -26,7 +26,7 @@ export default class App {
     const data = await this.getDataFromModel(this.model, this.view);
     this.view.renderNewContent(data);
     this.setSwipeListener(this.view, this);
-    this.checkTouch();
+    this.checkTouchDevice();
   }
 
   setDataFromAllResponces(data) {
@@ -156,7 +156,7 @@ export default class App {
     }
   }
 
-  checkTouch() {
+  checkTouchDevice() {
     if (('ontouchstart' in window) || window.DocumentTouch && document instanceof window.DocumentTouch) {
       console.log('this is a touch device');
     } else {
